@@ -14,7 +14,6 @@ public class AuthResponse {
 
     public String nomPrenom;
 
-
     public String email ;
 
 

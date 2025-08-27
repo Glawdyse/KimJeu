@@ -1,6 +1,7 @@
 package com.jeueducatifs.makon.com.Config;
 
 
+import com.jeueducatifs.makon.com.Model.Game;
 import com.jeueducatifs.makon.com.Model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,4 +27,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateid(Game game) {
+        return null;
+    }
 }

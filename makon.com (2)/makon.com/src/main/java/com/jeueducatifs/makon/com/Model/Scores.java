@@ -16,8 +16,6 @@ public class Scores {
     @Column(nullable = false)
     private Integer nombres_points;
 
-    @ManyToOne
-    @JoinColumn(name = "jeu",referencedColumnName = "id_jeu",nullable = false,unique = true)
-    private Jeu jeu;
+
 
 }

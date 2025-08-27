@@ -13,7 +13,8 @@ public class WebConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // ← autorise login et register
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/games/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
