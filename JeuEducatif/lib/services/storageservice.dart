@@ -30,19 +30,30 @@ class GameStorage {
   }
 
   // ✅ Méthode pour récupérer un jeu par son ID depuis le backend
-  Future<Game> fetchGameById(String gameId) async {
+  Future<dynamic> fetchGameById(String gameId) async {
     final url = Uri.parse('$baseUrl/$gameId');
-    print(' identifiant du jeu $gameId');
+    print('Identifiant du jeu : $gameId');
+
     final response = await http.get(url);
+    final contentType = response.headers['content-type'];
 
     if (response.statusCode == 200) {
-
-      final Map<String, dynamic> jsonData = jsonDecode(response.body);
-      return Game.fromJson(jsonData);
+      if (contentType != null && contentType.contains('application/json')) {
+        // C'est du JSON → parser en objet Game
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        return Game.fromJson(jsonData);
+      } else if (contentType != null && contentType.contains('application/pdf')) {
+        // C'est un PDF → récupérer les bytes
+        final pdfBytes = response.bodyBytes;
+        return pdfBytes;
+      } else {
+        throw Exception('Type de contenu non supporté : $contentType');
+      }
     } else {
       throw Exception('Échec de la récupération du jeu : ${response.statusCode}');
     }
   }
+
 
   Future<void> upsertGame(Game game) async {
     await _gameStorage.write(game.id, game.toJson());

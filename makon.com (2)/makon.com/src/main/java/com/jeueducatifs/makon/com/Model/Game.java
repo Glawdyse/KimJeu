@@ -32,7 +32,6 @@ public class Game {
     @CollectionTable(name = "game_source", joinColumns = @JoinColumn(name = "game_id"))
     @MapKeyColumn(name = "`key`") // Utilisation des backticks
     @Column(name = "value", columnDefinition = "TEXT")
-    @JsonSerialize(using = ToStringSerializer.class)
     private Map<String, String> source;
 
     private int numQuestions;

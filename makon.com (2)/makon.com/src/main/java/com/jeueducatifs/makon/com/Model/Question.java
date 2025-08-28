@@ -1,5 +1,6 @@
 package com.jeueducatifs.makon.com.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -30,7 +31,7 @@ public class Question {
     private List<String> choices;
 
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference
     @JoinColumn(name = "game_id")
     private Game game;
 }

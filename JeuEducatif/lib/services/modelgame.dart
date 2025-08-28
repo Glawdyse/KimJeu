@@ -13,10 +13,14 @@ class Question {
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
-      id: json['id'] as String,
-      question: json['question'] as String,
-      choices: (json['choices'] as List).map((e) => e.toString()).toList(),
-      answerIndex: json['answerIndex'] as int,
+      id: json['id']?.toString() ?? '',
+      question: json['question']?.toString() ?? '',
+      choices: (json['choices'] as List? ?? [])
+          .map((e) => e.toString())
+          .toList(),
+      answerIndex: json['answerIndex'] is int
+          ? json['answerIndex']
+          : int.tryParse(json['answerIndex'].toString()) ?? 0,
     );
   }
 
@@ -43,9 +47,14 @@ class PlayRecord {
 
   factory PlayRecord.fromJson(Map<String, dynamic> json) => PlayRecord(
     player: json['player']?.toString() ?? 'Anonymous',
-    answers: (json['answers'] as List).map((e) => e as int).toList(),
-    score: json['score'] as int,
-    playedAt: DateTime.parse(json['playedAt'] as String),
+    answers: (json['answers'] as List? ?? [])
+        .map((e) => e is int ? e : int.tryParse(e.toString()) ?? 0)
+        .toList(),
+    score: json['score'] is int
+        ? json['score']
+        : int.tryParse(json['score'].toString()) ?? 0,
+    playedAt: DateTime.tryParse(json['playedAt']?.toString() ?? '') ??
+        DateTime.now(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -95,9 +104,10 @@ class Game {
     );
   }
 
-  factory Game.fromMistralJson(String id, Map<String, dynamic> json, Map<String, dynamic> source) {
-    final questionsList = (json['questions'] as List)
-        .map((e) => Question.fromJson(Map<String, dynamic>.from(e as Map)))
+  factory Game.fromMistralJson(
+      String id, Map<String, dynamic> json, Map<String, dynamic> source) {
+    final questionsList = (json['questions'] as List? ?? [])
+        .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
         .toList();
 
     return Game(
@@ -105,23 +115,29 @@ class Game {
       name: json['name']?.toString() ?? 'Quiz',
       createdAt: DateTime.now(),
       source: source,
-      numQuestions: json['numQuestions'] as int,
+      numQuestions: json['numQuestions'] is int
+          ? json['numQuestions']
+          : int.tryParse(json['numQuestions'].toString()) ?? 0,
       questions: questionsList,
       plays: <PlayRecord>[],
     );
   }
 
   factory Game.fromJson(Map<String, dynamic> json) => Game(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    createdAt: DateTime.parse(json['createdAt'] as String),
-    source: Map<String, dynamic>.from(json['source'] as Map),
-    numQuestions: json['numQuestions'] as int,
-    questions: (json['questions'] as List)
-        .map((e) => Question.fromJson(Map<String, dynamic>.from(e as Map)))
+    id: json['id']?.toString() ?? '',
+    name: json['name']?.toString() ?? '',
+    createdAt:
+    DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+        DateTime.now(),
+    source: Map<String, dynamic>.from(json['source'] ?? {}),
+    numQuestions: json['numQuestions'] is int
+        ? json['numQuestions']
+        : int.tryParse(json['numQuestions'].toString()) ?? 0,
+    questions: (json['questions'] as List? ?? [])
+        .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
         .toList(),
     plays: (json['plays'] as List? ?? [])
-        .map((e) => PlayRecord.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map((e) => PlayRecord.fromJson(Map<String, dynamic>.from(e)))
         .toList(),
   );
 

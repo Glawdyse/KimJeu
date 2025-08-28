@@ -2,6 +2,7 @@ package com.jeueducatifs.makon.com.Controller;
 import com.jeueducatifs.makon.com.Model.Game;
 import com.jeueducatifs.makon.com.Service.GameService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -23,11 +24,13 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public Game getGame(@PathVariable String id) {
-        return gameService.getGameById(id).orElseThrow(() -> new RuntimeException("Game not found"));
+    public ResponseEntity<Game> getGameById(@PathVariable String id) {
+        return gameService.getGameById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Game createGame(@RequestBody Game game) {
 
         System.out.println("donnees recu "+ game.getId() );

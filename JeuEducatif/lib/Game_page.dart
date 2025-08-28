@@ -8,6 +8,7 @@ import '../services/game_service.dart';
 import 'Dashboards/Admin/notifservice.dart' as admin_notif;
 
 import 'Dashboards/Apprenant/listes.dart';
+
 import 'Pages/quizformulaire.dart';
 
 
@@ -158,8 +159,7 @@ class _GamePageState extends State<GamePage> {
     }
   }
   void _jouer(String gameId) async {
-
-    final st= GameStorage();
+    final st = GameStorage();
 
     if (_dernierJeu == null) {
       _snack('Génère un jeu d’abord.');
@@ -167,14 +167,25 @@ class _GamePageState extends State<GamePage> {
     }
 
     try {
-      final game = await st.fetchGameById(gameId);
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => QuizPage(game: game)),
-      );
+      final result = await st.fetchGameById(gameId);
+
+      if (result is Game) {
+        // Cas JSON → afficher le quiz
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => QuizPage(game: result)),
+        );
+      } else if (result is Uint8List) {
+        // Cas PDF → afficher le PDF avec pdf_viewer_flutter
+       print(" ici las ");
+      } else {
+        _snack('Type de contenu inconnu reçu depuis le serveur.');
+      }
     } catch (e) {
       _snack('Erreur lors du chargement du jeu : $e');
+      print('$e');
     }
   }
+
 
 
 
