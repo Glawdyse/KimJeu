@@ -31,10 +31,28 @@ class Question {
     'answerIndex': answerIndex,
   };
 }
+class PlayAnswer {
+  final String questionId;
+  final int answer;
+
+  PlayAnswer({required this.questionId, required this.answer});
+
+  factory PlayAnswer.fromJson(Map<String, dynamic> json) => PlayAnswer(
+    questionId: json['questionId'] ?? '',
+    answer: json['answer'] is int
+        ? json['answer']
+        : int.tryParse(json['answer'].toString()) ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'questionId': questionId,
+    'answer': answer,
+  };
+}
 
 class PlayRecord {
   final String player;
-  final List<int> answers;
+  final List<PlayAnswer> answers; // ✅ changer List<int> en List<PlayAnswer>
   final int score;
   final DateTime playedAt;
 
@@ -48,7 +66,7 @@ class PlayRecord {
   factory PlayRecord.fromJson(Map<String, dynamic> json) => PlayRecord(
     player: json['player']?.toString() ?? 'Anonymous',
     answers: (json['answers'] as List? ?? [])
-        .map((e) => e is int ? e : int.tryParse(e.toString()) ?? 0)
+        .map((e) => PlayAnswer.fromJson(Map<String, dynamic>.from(e)))
         .toList(),
     score: json['score'] is int
         ? json['score']
@@ -59,11 +77,17 @@ class PlayRecord {
 
   Map<String, dynamic> toJson() => {
     'player': player,
-    'answers': answers,
+    'answers': answers.map((e) => e.toJson()).toList(),
     'score': score,
     'playedAt': playedAt.toIso8601String(),
   };
+
+  @override
+  String toString() {
+    return 'PlayRecord(player: $player, score: $score, answers: $answers, playedAt: $playedAt)';
+  }
 }
+
 
 class Game {
   final String id;

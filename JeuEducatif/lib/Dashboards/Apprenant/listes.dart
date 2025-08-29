@@ -3,7 +3,6 @@ import '../../Pages/quizformulaire.dart';
 import '../../services/modelgame.dart';
 import '../../services/storageservice.dart';
 
-
 class GamesListPage extends StatefulWidget {
     const GamesListPage({super.key});
 
@@ -35,7 +34,9 @@ class _GamesListPageState extends State<GamesListPage> {
             appBar: AppBar(
                 title: const Text('Liste des jeux'),
                 centerTitle: true,
-                actions: [IconButton(onPressed: _reload, icon: const Icon(Icons.refresh))],
+                actions: [
+                    IconButton(onPressed: _reload, icon: const Icon(Icons.refresh))
+                ],
             ),
             body: Column(
                 children: [
@@ -55,7 +56,8 @@ class _GamesListPageState extends State<GamesListPage> {
                                     },
                                 )
                                     : null,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                             ),
                             onChanged: (v) => setState(() => _query = v.toLowerCase()),
                         ),
@@ -68,7 +70,9 @@ class _GamesListPageState extends State<GamesListPage> {
                                     return const Center(child: CircularProgressIndicator());
                                 }
                                 final games = snap.data!
-                                    .where((g) => _query.isEmpty || g.name.toLowerCase().contains(_query))
+                                    .where((g) =>
+                                _query.isEmpty ||
+                                    g.name.toLowerCase().contains(_query))
                                     .toList();
                                 if (games.isEmpty) {
                                     return const Center(child: Text('Aucun jeu enregistré.'));
@@ -79,48 +83,19 @@ class _GamesListPageState extends State<GamesListPage> {
                                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                                     itemBuilder: (context, index) {
                                         final game = games[index];
-                                        final best = game.plays.isEmpty
-                                            ? null
-                                            : game.plays.map((p) => p.score).reduce((a, b) => a > b ? a : b);
-                                        return ExpansionTile(
+                                        return ListTile(
                                             title: Text(game.name),
-                                            subtitle: Text('${game.numQuestions} questions • ${game.plays.length} partie(s)'
-                                                '${best != null ? ' • meilleur: $best' : ''}'),
-                                            children: [
-                                                ListTile(
-                                                    title: const Text('Rejouer'),
-                                                    trailing: const Icon(Icons.play_arrow),
-                                                    onTap: () => Navigator.of(context).push(
-                                                        MaterialPageRoute(builder: (_) => QuizPage(game: game)),
-                                                    ),
-                                                ),
-                                                const Divider(),
-                                                Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                                    child: Text('Réponses correctes:', style: Theme.of(context).textTheme.titleMedium),
-                                                ),
-                                                for (final q in game.questions)
-                                                    ListTile(
-                                                        dense: true,
-                                                        title: Text(q.question),
-                                                        subtitle: Text('Bonne réponse: ${q.choices[q.answerIndex]}'),
-                                                    ),
-                                                const Divider(),
-                                                Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                                    child:
-                                                    Text('Parties enregistrées:', style: Theme.of(context).textTheme.titleMedium),
-                                                ),
-                                                if (game.plays.isEmpty)
-                                                    const ListTile(dense: true, title: Text('Aucune partie pour ce jeu.'))
-                                                else
-                                                    for (final p in game.plays)
-                                                        ListTile(
-                                                            dense: true,
-                                                            title: Text('${p.player} — ${p.score}/${game.numQuestions}'),
-                                                            subtitle: Text('Le ${p.playedAt.toLocal()}'),
+                                            trailing: ElevatedButton.icon(
+                                                icon: const Icon(Icons.play_arrow),
+                                                label: const Text('Jouer'),
+                                                onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) => QuizPage(game: game),
                                                         ),
-                                            ],
+                                                    );
+                                                },
+                                            ),
                                         );
                                     },
                                 );

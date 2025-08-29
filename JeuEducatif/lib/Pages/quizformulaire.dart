@@ -32,23 +32,34 @@ class _QuizPageState extends State<QuizPage> {
       _score = score;
     });
   }
-
   Future<void> _savePlay() async {
-    if (!_validated) return;
-    final answers = widget.game.questions.map((q) => _selectedPerQuestion[q.id] ?? -1).toList();
-    await _storage.addPlay(
-      widget.game.id,
-      PlayRecord(
-        player: _nameCtrl.text.trim().isEmpty ? 'Anonymous' : _nameCtrl.text.trim(),
-        answers: answers,
-        score: _score,
-        playedAt: DateTime.now(),
-      ),
+    if (!_validated) return; // si les réponses n’ont pas été validées, on arrête
+
+    // transforme les réponses sélectionnées en PlayAnswer
+    final List<PlayAnswer> playAnswers = widget.game.questions.map((q) {
+      final answerIndex = _selectedPerQuestion[q.id] ?? -1; // -1 si aucune réponse
+      return PlayAnswer(questionId: q.id, answer: answerIndex);
+    }).toList();
+
+    // construit l'objet PlayRecord
+    final playRecord = PlayRecord(
+      player: _nameCtrl.text.trim().isEmpty ? 'Anonymous' : _nameCtrl.text.trim(),
+      answers: playAnswers,
+      score: _score,
+      playedAt: DateTime.now(),
     );
+
+    // envoie au backend
+    await _storage.addPlay(widget.game.id, playRecord);
+
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Score enregistré.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Score enregistré.')));
     }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -4,29 +4,29 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 public class PlayRecord {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String playerId;
+    private String playerId; // identifiant du joueur
 
     private int score;
 
     private LocalDateTime playedAt;
 
-    @ElementCollection
-    @CollectionTable(name = "play_answers", joinColumns = @JoinColumn(name = "play_id"))
-    @MapKeyColumn(name = "question_id")
-    @Column(name = "answer")
-    private Map<String, String> answers;
+    // ✅ Relation avec PlayAnswer
+    @OneToMany(mappedBy = "playRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayAnswer> answers = new ArrayList<>();
 
-    // Getters and setters
+    // ✅ Lien avec le jeu
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
 }
-
-
-

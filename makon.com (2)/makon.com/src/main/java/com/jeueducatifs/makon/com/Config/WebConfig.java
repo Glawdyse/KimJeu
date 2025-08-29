@@ -15,6 +15,8 @@ public class WebConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/games/**").permitAll()
+                        .requestMatchers("/api/plays/**").permitAll()
+
                         .anyRequest().authenticated()
                 );
 

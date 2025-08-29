@@ -53,6 +53,86 @@ class GameStorage {
       throw Exception('Échec de la récupération du jeu : ${response.statusCode}');
     }
   }
+  Future<PlayRecord> sendPlayRecord(String gameId, PlayRecord record) async {
+    final url = Uri.parse('$baseUrl/api/games/$gameId/plays');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(record.toJson()),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return PlayRecord.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception(
+          'Erreur lors de l’enregistrement du score: ${response.body}');
+    }
+  }
+
+  // Exemple pour récupérer tous les PlayRecords d'un jeu
+  Future<List<PlayRecord>> fetchPlays(String gameId) async {
+    final url = Uri.parse('$baseUrl/$gameId/plays');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => PlayRecord.fromJson(e)).toList();
+    } else {
+      throw Exception('Impossible de récupérer les scores: ${response.body}');
+    }
+  }
+  Future<PlayRecord?> addPlay(String gameId, PlayRecord play) async {
+    final url = Uri.parse('$baseUrl/$gameId/plays');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(play.toJson()),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("✅ Score enregistré avec succès : ${response.body}");
+      final data = jsonDecode(response.body);
+      return PlayRecord(
+        player: data["player"],
+        answers: (data["answers"] as List? ?? [])
+            .map((e) => PlayAnswer.fromJson(Map<String, dynamic>.from(e)))
+            .toList(),
+        score: data["score"] is int
+            ? data["score"]
+            : int.tryParse(data["score"].toString()) ?? 0,
+        playedAt: DateTime.tryParse(data["playedAt"] ?? '') ?? DateTime.now(),
+      );
+
+
+  } else {
+      print("❌ Erreur lors de l'enregistrement du score : ${response.body}");
+      return null;
+    }
+  }
+  Future<List<Game>> fetchGameNames() async {
+    final response = await http.get(Uri.parse(baseUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((json) => Game.fromJson(json)).toList();
+    } else {
+      throw Exception('Impossible de récupérer les jeux');
+    }
+  }
+  Future<void> savePlay(String gameId, PlayRecord play) async {
+    final url = Uri.parse('$baseUrl/games/$gameId/plays');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(play.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Erreur lors de l\'enregistrement du joueur');
+    }
+  }
 
 
   Future<void> upsertGame(Game game) async {
@@ -89,12 +169,6 @@ class GameStorage {
     await _gameStorage.erase();
   }
 
-  Future<void> addPlay(String gameId, PlayRecord play) async {
-    final game = await getGame(gameId);
-    if (game == null) return;
-    final updated = game.copyWith(plays: [...game.plays, play]);
-    await upsertGame(updated);
-  }
 
   Future<void> saveAuthToken(String token) async {
     await _userStorage.write(_tokenKey, token);
