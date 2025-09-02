@@ -15,12 +15,21 @@ void main() {
       brightness: Brightness.light, // Forcer le mode clair
       scaffoldBackgroundColor: Colors.white, // Fond blanc
     ),
-    home: APPRENANTDashboard(),
+    home: APPRENANTDashboard(user: {
+        'id': 1,
+        'nomPrenom': 'Alice Dupont',
+        'email': 'alice@example.com',
+        'role': 'APPRENANT',
+      },),
   ));
 }
 
 class APPRENANTDashboard extends StatefulWidget {
-  const APPRENANTDashboard({super.key});
+
+  final Map<String, dynamic> user; // <-- ajouter ceci
+
+  const APPRENANTDashboard({super.key ,required this.user});
+
 
   @override
   State<APPRENANTDashboard> createState() => _APPRENANTDashboardState();
@@ -55,7 +64,7 @@ class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
                 child: Column(
                   children: [
                     Text(
-                      'Nom de Educateur',
+                widget.user['nomPrenom'], // ← nom dynamique
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 30),

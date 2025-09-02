@@ -1,13 +1,15 @@
 // lib/Dashboards/Admin/admin_dashboard.dart
 import 'package:flutter/material.dart';
-import 'package:jeuEducatif/Dashboards/Admin/parametre.dart';   // => doit exposer SettingsPage
-import 'package:jeuEducatif/Dashboards/Admin/useradmin.dart';   // => doit exposer UsersPage
-import 'package:jeuEducatif/Dashboards/Admin/jeuadmin.dart';    // => doit exposer GamesAdminPage
-import 'package:jeuEducatif/Pages/login.dart';                  // => LoginPage
+import 'package:jeuEducatif/Dashboards/Admin/parametre.dart';
+import 'package:jeuEducatif/Dashboards/Admin/useradmin.dart';
+import 'package:jeuEducatif/Dashboards/Admin/jeuadmin.dart';
+import 'package:jeuEducatif/Pages/login.dart';
 import 'package:jeuEducatif/Dashboards/Admin/notifications_page.dart';
 
 class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({super.key});
+  final Map<String, dynamic> user; // <-- ajouter le paramètre user
+
+  const AdminDashboard({super.key, required this.user});
 
   @override
   State<AdminDashboard> createState() => _AdminDashboardState();
@@ -17,13 +19,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
   int _idx = 0;
 
   final List<Widget> _pages = const [
-    UsersPage(),        // depuis useradmin.dart
-    GamesAdminPage(),   // depuis jeuadmin.dart
-    SettingsPage(),     // depuis parametre.dart
+    UsersPage(),
+    GamesAdminPage(),
+    SettingsPage(),
   ];
 
   void _logout() {
-    // TODO: effacer le token/session si nécessaire
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -41,7 +42,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Administration'),
+        // <-- afficher le nom de l'utilisateur connecté
+        title: Text('Bienvenue, ${widget.user['nomPrenom']}'),
         actions: [
           IconButton(
             tooltip: 'Notifications',

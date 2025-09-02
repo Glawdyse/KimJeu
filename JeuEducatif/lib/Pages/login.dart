@@ -262,13 +262,37 @@ class _LoginPageState extends State<LoginPage> {
 
         switch (role) {
           case 'EDUCATEUR':
-            Navigator.push(context, MaterialPageRoute(builder: (_) => EDUCATEURDashboard()));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => EDUCATEURDashboard( user: {
+              "nomPrenom": user.nomPrenom,
+              "email": user.email,
+              "role": user.role.toString(),
+
+            },)));
             break;
           case 'ADMIN':
-            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDashboard()));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDashboard(user:  {
+              "nomPrenom": "makon",
+              "email": "yvette@example.com",
+              "role": "ADMIN",
+            },)));
+
             break;
           case 'APPRENANT':
-            Navigator.push(context, MaterialPageRoute(builder: (_) => APPRENANTDashboard()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => APPRENANTDashboard(
+                  user: {
+                    "nomPrenom": user.nomPrenom,
+                    "email": user.email,
+                    "role": user.role.toString(),
+
+                  },
+                ),
+              ),
+            );
+            break;
+
             break;
           default:
             ScaffoldMessenger.of(context).showSnackBar(

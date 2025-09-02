@@ -15,12 +15,20 @@ void main() {
       brightness: Brightness.light, // Forcer le mode clair
       scaffoldBackgroundColor: Colors.white, // Fond blanc
     ),
-    home: EDUCATEURDashboard(),
-  ));
+    home: EDUCATEURDashboard(user: {
+      'id': 1,
+      'nomPrenom': 'Alice Dupont',
+      'email': 'alice@example.com',
+      'role': 'APPRENANT',
+    },),));
+
 }
 
 class EDUCATEURDashboard extends StatefulWidget {
-  const EDUCATEURDashboard({super.key});
+
+  final Map<String, dynamic> user; // <-- ajouter ceci
+
+  const EDUCATEURDashboard({super.key ,required this.user});
 
   @override
   State<EDUCATEURDashboard> createState() => _EDUCATEURDashboardState();
@@ -55,7 +63,7 @@ class _EDUCATEURDashboardState extends State<EDUCATEURDashboard> {
                 child: Column(
                   children: [
                     Text(
-                      'Nom de Educateur',
+                      widget.user['nomPrenom'], // ← nom dynamique
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 30),
@@ -75,7 +83,7 @@ class _EDUCATEURDashboardState extends State<EDUCATEURDashboard> {
                     SidebarButton(
                       icon: Icons.feedback_outlined,
                       label: 'Listes de jeux disponibles',
-                      onTap: () => changeScreen(ListejeuxPage()),
+                      onTap: () => changeScreen(GamesListPage()),
                     ),
                     SidebarButton(
                       icon: Icons.group_add_outlined,

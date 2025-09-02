@@ -83,6 +83,7 @@ class GameStorage {
       throw Exception('Impossible de récupérer les scores: ${response.body}');
     }
   }
+
   Future<PlayRecord?> addPlay(String gameId, PlayRecord play) async {
     final url = Uri.parse('$baseUrl/$gameId/plays');
     final response = await http.post(

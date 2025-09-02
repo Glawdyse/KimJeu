@@ -1,101 +1,59 @@
 import 'package:flutter/material.dart';
+import '../../services/modelgame.dart';
+import '../../services/storageservice.dart';
 
-class ListejeuxPage extends StatefulWidget {
+class GamesListPage extends StatefulWidget {
+  const GamesListPage({super.key});
+
   @override
-  _ListeJeuxPageState createState() => _ListeJeuxPageState();
+  State<GamesListPage> createState() => _GamesListPageState();
 }
 
-class _ListeJeuxPageState extends State<ListejeuxPage> {
-  final List<String> tousLesJeux = [
-    'Puzzle éducatif',
-    'Quiz mathématiques',
-    'Mémoire visuelle',
-    'Jeu de logique',
-    'Calcul mental',
-    'Lecture rapide',
-  ];
-
-  List<String> jeuxFiltres = [];
-  final TextEditingController _searchController = TextEditingController();
+class _GamesListPageState extends State<GamesListPage> {
+  final _storage = GameStorage();
+  late Future<List<Game>> _future;
 
   @override
   void initState() {
     super.initState();
-    jeuxFiltres = List.from(tousLesJeux);
-  }
-
-  void filtrerJeux(String query) {
-    setState(() {
-      jeuxFiltres = tousLesJeux
-          .where((jeu) => jeu.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
-
-  void effacerRecherche() {
-    _searchController.clear();
-    filtrerJeux('');
+    _future = _storage.getAllGames();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Liste des jeux"),
+        title: const Text('Liste des jeux'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // 🔍 Barre de recherche
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Rechercher un jeu',
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                  icon: Icon(Icons.clear),
-                  onPressed: effacerRecherche,
-                )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onChanged: filtrerJeux,
-            ),
-            SizedBox(height: 20),
+      body: FutureBuilder<List<Game>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('Aucun jeu enregistré.'));
+          }
 
-            // 📋 Liste filtrée
-            Expanded(
-              child: jeuxFiltres.isNotEmpty
-                  ? ListView.builder(
-                itemCount: jeuxFiltres.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 2,
-                    margin: EdgeInsets.symmetric(vertical: 6),
-                    child: ListTile(
-                      title: Text(jeuxFiltres[index]),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {
-                        // Action à définir
-                      },
-                    ),
-                  );
-                },
-              )
-                  : Center(
-                child: Text(
-                  "Aucun jeu trouvé.",
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+          final games = snapshot.data!;
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(12),
+            itemCount: games.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final game = games[index];
+
+              return ListTile(
+                title: Text(game.name),
+                subtitle: Text(
+                  'Créé le: ${game.createdAt.toLocal().toString().split(' ')[0]} | Questions: ${game.numQuestions}',
                 ),
-              ),
-            ),
-          ],
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }
