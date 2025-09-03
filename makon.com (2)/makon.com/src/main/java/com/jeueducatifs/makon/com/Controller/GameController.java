@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/games")
@@ -49,6 +50,11 @@ public class GameController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/summaries")
+    public ResponseEntity<List<Map<String, Object>>> getGameSummaries() {
+        List<Map<String, Object>> summaries = gameService.getGameSummaries();
+        return ResponseEntity.ok(summaries);
+    }
 
     @PostMapping
     public Game createGame(@RequestBody Game game) {
@@ -59,4 +65,5 @@ public class GameController {
     public void deleteGame(@PathVariable String id) {
         gameService.deleteGame(id);
     }
+
 }

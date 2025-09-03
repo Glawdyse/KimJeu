@@ -112,8 +112,10 @@ class GameStorage {
       return null;
     }
   }
-  Future<List<Game>> fetchGameNames() async {
-    final response = await http.get(Uri.parse(baseUrl));
+   static Future<List<Game>> fetchGameNames() async {
+     final String baseUrl = 'http://localhost:8080/api/games';
+
+     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
@@ -160,6 +162,19 @@ class GameStorage {
       }
     }
     return games;
+  }
+
+
+  Future<List<GameSummary>> getGameSummaries() async {
+    final url = Uri.parse('$baseUrl/summaries'); // /api/games/summaries
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => GameSummary.fromJson(e)).toList();
+    } else {
+      throw Exception("Impossible de charger les jeux");
+    }
   }
 
   Future<void> deleteGame(String id) async {

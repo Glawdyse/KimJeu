@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,6 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private  Role role;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -2,8 +2,10 @@ package com.jeueducatifs.makon.com.Controller;
 
 import com.jeueducatifs.makon.com.Model.User;
 import com.jeueducatifs.makon.com.Repository.UserRepository;
+import com.jeueducatifs.makon.com.Service.GameService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final GameService gameService;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -60,5 +63,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Integer id) {
         userRepository.deleteById(id);
+    }
+    @GetMapping("/summaries")
+    public ResponseEntity<List<Map<String, Object>>> getGameSummaries() {
+        return ResponseEntity.ok(gameService.getGameSummaries());
     }
 }

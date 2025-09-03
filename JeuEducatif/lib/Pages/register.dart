@@ -119,7 +119,7 @@ class _RegisterState extends State<Register> {
       children: [
         if (size.width <= 600)
           Lottie.asset(
-            'assets/coin.json',
+            'assets/wave.json',
             height: size.height * 0.2,
             width: size.width,
             fit: BoxFit.fill,

@@ -4,6 +4,7 @@ import 'package:jeuEducatif/Dashboards/Admin/admin.dart';
 import 'package:jeuEducatif/Dashboards/Apprenant/apprenant.dart';
 import 'package:jeuEducatif/Dashboards/Educateur/educateur.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/AuthentificationService.dart';
 import 'register.dart';
@@ -63,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
           child: RotatedBox(
             quarterTurns: 3,
             child: Lottie.asset(
-              'assets/coin.json',
+              'assets/wave.json',
               height: size.height * 0.3,
               width: double.infinity,
               fit: BoxFit.fill,
@@ -108,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.only(left: 20.0),
-          child: Text('BIENVENUE A VOUS Veuillez vous connecter', style: kLoginSubtitleStyle(size)),
+          child: Text('BIENVENUE DANS NOTRE APPLICATION  Veuillez vous connecter', style: kLoginSubtitleStyle(size)),
         ),
         SizedBox(height: size.height * 0.03),
         Padding(
@@ -207,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: kHaveAnAccountStyle(size),
                       children: [
                         TextSpan(
-                          text: " Se connecter",
+                          text: " S'inscrire",
                           style: kLoginOrSignUpTextStyle(size),
                         ),
                       ],
@@ -259,6 +260,20 @@ class _LoginPageState extends State<LoginPage> {
 
       if (user != null && user.role != null) {
         final role = user.role.toString().toUpperCase();
+        final userData = {
+          "nomPrenom": user.nomPrenom,
+          "email": user.email,
+          "role": user.role.toString(),
+        };
+        Future<void> saveUserToPrefs(Map<String, dynamic> user) async {
+          final prefs = await SharedPreferences.getInstance();// appelle au sharedpreferences pour l'initialiser
+          await prefs.setString('nomPrenom', user['nomPrenom'] ?? '');
+          await prefs.setString('email', user['email'] ?? '');
+          await prefs.setString('role', user['role'] ?? '');
+        }
+        // 🔹 Sauvegarde dans SharedPreferences
+        await saveUserToPrefs(userData);
+
 
         switch (role) {
           case 'EDUCATEUR':

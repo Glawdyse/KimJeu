@@ -97,6 +97,7 @@ class Game {
   final int numQuestions;
   final List<Question> questions;
   final List<PlayRecord> plays;
+  final String email;
 
   Game({
     required this.id,
@@ -106,6 +107,7 @@ class Game {
     required this.numQuestions,
     required this.questions,
     required this.plays,
+    required this.email,
   });
 
   Game copyWith({
@@ -116,6 +118,7 @@ class Game {
     int? numQuestions,
     List<Question>? questions,
     List<PlayRecord>? plays,
+    String? email,
   }) {
     return Game(
       id: id ?? this.id,
@@ -125,11 +128,12 @@ class Game {
       numQuestions: numQuestions ?? this.numQuestions,
       questions: questions ?? this.questions,
       plays: plays ?? this.plays,
+      email: email ?? this.email,
     );
   }
 
-  factory Game.fromMistralJson(
-      String id, Map<String, dynamic> json, Map<String, dynamic> source) {
+  factory Game.fromMistralJson(String id, Map<String, dynamic> json,
+      Map<String, dynamic> source,  String? email, ) {
     final questionsList = (json['questions'] as List? ?? [])
         .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
         .toList();
@@ -144,34 +148,61 @@ class Game {
           : int.tryParse(json['numQuestions'].toString()) ?? 0,
       questions: questionsList,
       plays: <PlayRecord>[],
+      email: email?? "inconnu",
     );
   }
 
-  factory Game.fromJson(Map<String, dynamic> json) => Game(
-    id: json['id']?.toString() ?? '',
-    name: json['name']?.toString() ?? '',
-    createdAt:
-    DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
-        DateTime.now(),
-    source: Map<String, dynamic>.from(json['source'] ?? {}),
-    numQuestions: json['numQuestions'] is int
-        ? json['numQuestions']
-        : int.tryParse(json['numQuestions'].toString()) ?? 0,
-    questions: (json['questions'] as List? ?? [])
-        .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
-        .toList(),
-    plays: (json['plays'] as List? ?? [])
-        .map((e) => PlayRecord.fromJson(Map<String, dynamic>.from(e)))
-        .toList(),
-  );
+  factory Game.fromJson(Map<String, dynamic> json) =>
+      Game(
+        id: json['id']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        createdAt:
+        DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+            DateTime.now(),
+        source: Map<String, dynamic>.from(json['source'] ?? {}),
+        numQuestions: json['numQuestions'] is int
+            ? json['numQuestions']
+            : int.tryParse(json['numQuestions'].toString()) ?? 0,
+        questions: (json['questions'] as List? ?? [])
+            .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
+            .toList(),
+        plays: (json['plays'] as List? ?? [])
+            .map((e) => PlayRecord.fromJson(Map<String, dynamic>.from(e)))
+            .toList(),
+        email: json['email']?.toString() ?? '',
+      );
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'createdAt': createdAt.toIso8601String(),
-    'source': source,
-    'numQuestions': numQuestions,
-    'questions': questions.map((e) => e.toJson()).toList(),
-    'plays': plays.map((e) => e.toJson()).toList(),
-  };
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id,
+        'name': name,
+        'createdAt': createdAt.toIso8601String(),
+        'source': source,
+        'numQuestions': numQuestions,
+        'questions': questions.map((e) => e.toJson()).toList(),
+        'plays': plays.map((e) => e.toJson()).toList(),
+        'email': email,
+      };
+}
+  class GameSummary {
+  final String id;
+  final String name;
+  final int numQuestions;
+  final DateTime createdAt;
+
+  GameSummary({
+  required this.id,
+  required this.name,
+  required this.numQuestions,
+  required this.createdAt,
+  });
+
+  factory GameSummary.fromJson(Map<String, dynamic> json) {
+  return GameSummary(
+  id: json['id'],
+  name: json['name'],
+  numQuestions: json['numQuestions'],
+  createdAt: DateTime.parse(json['createdAt']),
+  );
+  }
 }

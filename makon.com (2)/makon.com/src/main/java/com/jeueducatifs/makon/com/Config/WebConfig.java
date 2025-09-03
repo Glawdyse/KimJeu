@@ -17,6 +17,7 @@ public class WebConfig {
                         .requestMatchers("/api/games/**").permitAll()
                         .requestMatchers("/api/plays/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/games/summaries/**").permitAll()
 
                         .anyRequest().authenticated()
                 );

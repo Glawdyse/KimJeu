@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class GameService {
@@ -75,5 +77,17 @@ public class GameService {
 
     public List<Game> getAllGames() {
         return gameRepository.findAll();
+
+    }
+    public List<Map<String, Object>> getGameSummaries() {
+        List<Object[]> results = gameRepository.findGameSummaries();
+        return results.stream().map(row -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row[0]);
+            map.put("name", row[1]);
+            map.put("numQuestions", row[2]);
+            map.put("createdAt", row[3]);
+            return map;
+        }).toList();
     }
 }

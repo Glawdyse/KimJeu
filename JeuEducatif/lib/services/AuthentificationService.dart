@@ -27,6 +27,7 @@ class AuthService {
         final role = data['role'];
         final nomPrenom = data['nomPrenom'];
         final email = data['email'];
+        final id = data['id'];
 
 
         if (token == null || nomPrenom == null || email == null || role == null) {
@@ -38,6 +39,7 @@ class AuthService {
           role: role,
           nomPrenom: nomPrenom,
           email: email,
+
         );
       } else {
         String errorMessage = 'Erreur inconnue';

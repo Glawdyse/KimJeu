@@ -24,6 +24,7 @@ public class Game {
 
     private String name;
 
+    private String email;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
@@ -44,6 +45,8 @@ public class Game {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
     private List<PlayRecord> plays;
+
+
 
     // Getters and setters
 }
