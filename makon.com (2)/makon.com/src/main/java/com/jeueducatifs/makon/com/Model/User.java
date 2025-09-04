@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @Entity
-@Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
@@ -24,7 +23,7 @@ public class User {
     @Column(nullable = false)
     private  String nomPrenom;
 
-    @Getter
+
     @Column(nullable = false, unique = true)
     private String email;
 

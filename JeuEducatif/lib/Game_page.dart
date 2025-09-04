@@ -133,11 +133,15 @@ class _GamePageState extends State<GamePage> {
         return;
       }
       setState(() => _dernierJeu = game);
-      // Notifier l'admin qu'un nouveau jeu a été créé
-      admin_notif.NotificationsService.instance.notifyNewGame(game);
-      _snack('Jeu généré. Tu peux jouer ou enregistrer.');
-    } catch (e) {
-      _snack('Erreur: $e');
+
+      const int adminId = 3; // l'ID unique de ton admin
+      try {
+        await admin_notif.NotificationsService.instance
+            .notifyNewGame(game, adminId); // 🔴 async + userId
+        _snack('Jeu généré. Tu peux jouer ou enregistrer.');
+      } catch (e) {
+        _snack('Jeu généré, mais impossible de notifier l’admin : $e');
+      }
     } finally {
       setState(() => _chargement = false);
     }

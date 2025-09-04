@@ -46,6 +46,8 @@ public class Game {
     @JoinColumn(name = "game_id")
     private List<PlayRecord> plays;
 
+    public void setUser(User user) {
+    }
 
 
     // Getters and setters

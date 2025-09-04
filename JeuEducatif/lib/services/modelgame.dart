@@ -205,4 +205,5 @@ class Game {
   createdAt: DateTime.parse(json['createdAt']),
   );
   }
-}
+
+  }

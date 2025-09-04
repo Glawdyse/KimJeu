@@ -29,6 +29,8 @@ class GameStorage {
     }
   }
 
+  
+
   // ✅ Méthode pour récupérer un jeu par son ID depuis le backend
   Future<dynamic> fetchGameById(String gameId) async {
     final url = Uri.parse('$baseUrl/$gameId');

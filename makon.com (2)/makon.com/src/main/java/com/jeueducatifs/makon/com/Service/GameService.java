@@ -1,10 +1,8 @@
 package com.jeueducatifs.makon.com.Service;
 
-import com.jeueducatifs.makon.com.Model.Game;
-import com.jeueducatifs.makon.com.Model.PlayAnswer;
-import com.jeueducatifs.makon.com.Model.PlayRecord;
-import com.jeueducatifs.makon.com.Model.Question;
+import com.jeueducatifs.makon.com.Model.*;
 import com.jeueducatifs.makon.com.Repository.GameRepository;
+import com.jeueducatifs.makon.com.Repository.NotificationsRepository;
 import com.jeueducatifs.makon.com.Repository.PlayRecordRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,9 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayRecordRepository playRecordRepository;
+
+    private NotificationsRepository notificationsRepository;
+
 
     public GameService(GameRepository gameRepository, PlayRecordRepository playRecordRepository) {
         this.gameRepository = gameRepository;
@@ -89,5 +90,18 @@ public class GameService {
             map.put("createdAt", row[3]);
             return map;
         }).toList();
+    }
+    public Game createGame(Game game, User user) {
+        game.setUser(user);
+        Game saved = gameRepository.save(game);
+
+        // Créer une notification
+        Notifications notif = new Notifications();
+        notif.setUser(user);
+        notif.setTypeNotif("NEW_GAME");
+        notif.setMessage("Un nouveau jeu a été créé : " + game.getName());
+        notificationsRepository.save(notif);
+
+        return saved;
     }
 }

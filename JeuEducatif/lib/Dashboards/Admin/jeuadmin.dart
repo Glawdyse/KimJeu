@@ -64,12 +64,24 @@ class _GamesAdminPageState extends State<GamesAdminPage> {
                           IconButton(
                             icon: const Icon(Icons.campaign_outlined),
                             tooltip: 'Notifier (nouveau jeu)',
-                            onPressed: () {
-                              NotificationsService.instance.notifyNewGame(g);
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification envoyée.')));
-                              setState(() {});
+                            onPressed: () async {
+                              // 🔴 Remplace '1' par l'ID réel de l'admin ou utilisateur cible
+                              const int adminId = 1;
+
+                              try {
+                                await NotificationsService.instance.notifyNewGame(g, adminId);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Notification envoyée.')),
+                                );
+                                setState(() {}); // pour rafraîchir l'UI si nécessaire
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Impossible d’envoyer la notification : $e')),
+                                );
+                              }
                             },
                           ),
+
                           IconButton(
                             icon: const Icon(Icons.delete_outline),
                             onPressed: () async {
