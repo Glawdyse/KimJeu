@@ -3,9 +3,9 @@ import '../../controller/drawer_user_controller.dart';
 import '../../controller/home_drawer.dart';
 import '../Apprenant/colors.dart';
 import '../Apprenant/listes.dart';
+import '../Apprenant/message.dart';
 import '../Educateur/Profil.dart';
 import '../Educateur/jouer.dart';
-import '../Educateur/message.dart';
 import 'evaluation.dart';
 import 'package:jeuEducatif/services/storageservice.dart';
 import 'package:jeuEducatif/Dashboards/Apprenant/Profil.dart' as profile_edit;
@@ -109,7 +109,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             screenView = const ProfilPage();
             break;
           case DrawerIndex.Help:
-            screenView = NotificationsPage();
+            screenView = AproposPage();
             break;
           case DrawerIndex.FeedBack:
             screenView = GamesListPage();

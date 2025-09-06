@@ -1,8 +1,12 @@
 package com.jeueducatifs.makon.com.Repository;
 
 import com.jeueducatifs.makon.com.Model.Game;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +19,11 @@ public interface GameRepository extends JpaRepository<Game, String> {
 
     @Query(value = "SELECT g.id, g.name, g.num_questions, g.created_at FROM game g", nativeQuery = true)
     List<Object[]> findGameSummaries();
+
+    // Utiliser Pageable de Spring Data
+    @Query("SELECT g FROM Game g ORDER BY g.createdAt DESC")
+    Page<Game> findTopGames(Pageable pageable);
+
 }
 
 

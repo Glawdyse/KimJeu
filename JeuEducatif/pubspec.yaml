@@ -24,6 +24,7 @@ dependencies:
   uuid: ^3.0.7
   url_launcher: ^6.2.5
   syncfusion_flutter_pdf: ^25.2.4
+  carousel_slider: ^5.1.1
 
 
 dev_dependencies:
@@ -39,4 +40,6 @@ flutter:
           - assets/wave.json
           - assets/images/background.jpeg
           - assets/images/logo.png
+          - assets/images/MAKON1.png
+
 

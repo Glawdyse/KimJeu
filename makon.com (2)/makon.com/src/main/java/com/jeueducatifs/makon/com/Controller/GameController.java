@@ -56,14 +56,18 @@ public class GameController {
         return ResponseEntity.ok(summaries);
     }
 
-    @PostMapping
-    public Game createGame(@RequestBody Game game) {
-        return gameService.saveGame(game);
+    @GetMapping("/top")
+    public ResponseEntity<List<Game>> getTopGames(@RequestParam(defaultValue = "5") int count) {
+        return ResponseEntity.ok(gameService.getTopGames(count));
     }
+        @PostMapping
+        public Game createGame (@RequestBody Game game){
+            return gameService.saveGame(game);
+        }
 
-    @DeleteMapping("/{id}")
-    public void deleteGame(@PathVariable String id) {
-        gameService.deleteGame(id);
+        @DeleteMapping("/{id}")
+        public void deleteGame (@PathVariable String id){
+            gameService.deleteGame(id);
+        }
+
     }
-
-}

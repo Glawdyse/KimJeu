@@ -1,29 +1,36 @@
 package com.jeueducatifs.makon.com.Service;
 
-import com.jeueducatifs.makon.com.Model.*;
+import com.jeueducatifs.makon.com.Model.Game;
+import com.jeueducatifs.makon.com.Model.PlayRecord;
+import com.jeueducatifs.makon.com.Model.PlayAnswer;
+import com.jeueducatifs.makon.com.Model.Notifications;
+import com.jeueducatifs.makon.com.Model.User;
 import com.jeueducatifs.makon.com.Repository.GameRepository;
-import com.jeueducatifs.makon.com.Repository.NotificationsRepository;
 import com.jeueducatifs.makon.com.Repository.PlayRecordRepository;
+import com.jeueducatifs.makon.com.Repository.NotificationsRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayRecordRepository playRecordRepository;
+    private final NotificationsRepository notificationsRepository;
 
-    private NotificationsRepository notificationsRepository;
-
-
-    public GameService(GameRepository gameRepository, PlayRecordRepository playRecordRepository) {
+    public GameService(GameRepository gameRepository,
+                       PlayRecordRepository playRecordRepository,
+                       NotificationsRepository notificationsRepository) {
         this.gameRepository = gameRepository;
         this.playRecordRepository = playRecordRepository;
+        this.notificationsRepository = notificationsRepository;
     }
 
     // Ajouter un PlayRecord pour un jeu
@@ -31,43 +38,40 @@ public class GameService {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // Associer le play au jeu
         play.setGame(game);
         play.setPlayedAt(LocalDateTime.now());
 
-        // Transformer les réponses (integers) en PlayAnswer
-        List<PlayAnswer> answers = play.getAnswers();
-        if (answers != null) {
-            answers.forEach(answer -> answer.setPlayRecord(play));
+        if (play.getAnswers() != null) {
+            for (PlayAnswer answer : play.getAnswers()) {
+                answer.setPlayRecord(play);
+            }
         }
 
-        // Sauvegarder le PlayRecord et ses réponses (cascade)
         PlayRecord saved = playRecordRepository.save(play);
-
-        // Ajouter le PlayRecord à la liste du jeu pour que getPlays() fonctionne
         game.getPlays().add(saved);
         gameRepository.save(game);
 
         return saved;
     }
 
-    // Récupérer tous les PlayRecords pour un jeu
+    public List<Game> getTopGames(int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return gameRepository.findTopGames(pageable).getContent();
+    }
+
     public List<PlayRecord> getPlaysByGame(String gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
         return game.getPlays();
     }
 
-    // Autres méthodes existantes
     public Optional<Game> getGameById(String id) {
         return gameRepository.findById(id);
     }
 
     public Game saveGame(Game game) {
         if (game.getQuestions() != null) {
-            for (Question question : game.getQuestions()) {
-                question.setId(null);
-            }
+            game.getQuestions().forEach(q -> q.setId(null));
         }
         return gameRepository.save(game);
     }
@@ -78,8 +82,8 @@ public class GameService {
 
     public List<Game> getAllGames() {
         return gameRepository.findAll();
-
     }
+
     public List<Map<String, Object>> getGameSummaries() {
         List<Object[]> results = gameRepository.findGameSummaries();
         return results.stream().map(row -> {
@@ -91,11 +95,11 @@ public class GameService {
             return map;
         }).toList();
     }
+
     public Game createGame(Game game, User user) {
         game.setUser(user);
         Game saved = gameRepository.save(game);
 
-        // Créer une notification
         Notifications notif = new Notifications();
         notif.setUser(user);
         notif.setTypeNotif("NEW_GAME");

@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:jeuEducatif/Game_page.dart';
-import 'package:jeuEducatif/Pages/login.dart';
 
+import 'package:jeuEducatif/Pages/login.dart';
+import '../../Game_page.dart';
+import '../../Pages/acceuil_educateur.dart';
 import '../Apprenant/jouer.dart';
+import '../Apprenant/message.dart';
 import 'Profil.dart';
 import 'evaluation.dart';
 import 'listes.dart';
-import 'message.dart';
+
+
 
 void main() {
   runApp(MaterialApp(
@@ -47,20 +50,17 @@ class EDUCATEURDashboard extends StatefulWidget {
 }
 
 class _EDUCATEURDashboardState extends State<EDUCATEURDashboard> {
-  Widget currentScreen = Center(
-    child: Text(
-      'Contenu principal ici',
-      style: TextStyle(fontSize: 24, color: Colors.deepPurple),
-    ),
-  );
-
+  late Widget currentScreen;
   Color avatarColor = Colors.deepPurple;
   late Timer colorTimer;
 
   @override
   void initState() {
     super.initState();
-    // Change la couleur toutes les secondes
+    // Page d'accueil éducateur par défaut
+    currentScreen =  EducateurHomePage();
+
+    // Change la couleur de l'avatar toutes les secondes
     colorTimer = Timer.periodic(Duration(seconds: 1), (_) {
       setState(() {
         avatarColor =
@@ -153,18 +153,8 @@ class _EDUCATEURDashboardState extends State<EDUCATEURDashboard> {
                   children: [
                     DrawerButton(
                       icon: Icons.home,
-                      label: 'Home',
-                      onTap: () => changeScreen(
-                        Center(
-                          child: Text(
-                            'Accueil',
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
+                      label: 'Accueil',
+                      onTap: () => changeScreen(EducateurHomePage()),
                     ),
                     DrawerButton(
                       icon: Icons.help_outline,
@@ -177,19 +167,19 @@ class _EDUCATEURDashboardState extends State<EDUCATEURDashboard> {
                       onTap: () => changeScreen(GamesListPage()),
                     ),
                     DrawerButton(
-                      icon: Icons.group_add_outlined,
+                      icon: Icons.play_circle_fill,
                       label: 'Jouer',
                       onTap: () => changeScreen(JouerPage(quizData: {})),
                     ),
                     DrawerButton(
-                      icon: Icons.star_border,
+                      icon: Icons.add_circle_outline,
                       label: 'Générer un jeu',
                       onTap: () => changeScreen(GamePage()),
                     ),
                     DrawerButton(
                       icon: Icons.info_outline,
-                      label: 'Messages',
-                      onTap: () => changeScreen(NotificationsPage()),
+                      label: 'Apropos',
+                      onTap: () => changeScreen(AproposPage()),
                     ),
                     DrawerButton(
                       icon: Icons.assignment,

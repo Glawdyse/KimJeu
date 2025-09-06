@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:jeuEducatif/Game_page.dart';
 import 'package:jeuEducatif/Pages/login.dart';
-
-import '../Apprenant/jouer.dart';
+import '../../Game_page.dart';
+import '../../Pages/acceuil.dart';
+import '../Educateur/jouer.dart';
 import 'Profil.dart';
 import 'gerer_profil.dart';
 import 'listes.dart';
 import 'message.dart';
+
 
 void main() {
   runApp(MaterialApp(
@@ -16,9 +17,9 @@ void main() {
     theme: ThemeData(
       brightness: Brightness.light,
       scaffoldBackgroundColor: Colors.white,
-      fontFamily: 'Roboto', // Police moderne
+      fontFamily: 'Roboto',
       appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF7E57C2), // violet doux
+        backgroundColor: Color(0xFF7E57C2),
         elevation: 0,
         titleTextStyle: TextStyle(
           fontSize: 22,
@@ -47,21 +48,15 @@ class APPRENANTDashboard extends StatefulWidget {
 }
 
 class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
-  Widget currentScreen = Center(
-    child: Text(
-      'Contenu principal ici',
-      style: TextStyle(fontSize: 24, color: Colors.deepPurple),
-    ),
-  );
+  Widget currentScreen = HomePage(); // 🔹 Page d’accueil par défaut
 
   Color avatarColor = Colors.deepPurple;
-
   late Timer colorTimer;
 
   @override
   void initState() {
     super.initState();
-    // Change la couleur toutes les secondes
+    // Changer la couleur de l'avatar toutes les secondes
     colorTimer = Timer.periodic(Duration(seconds: 1), (_) {
       setState(() {
         avatarColor =
@@ -122,7 +117,7 @@ class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
             children: [
               Container(
                 padding: EdgeInsets.all(24),
-                color: Color(0xFF7E57C2), // violet doux
+                color: Color(0xFF7E57C2),
                 child: Row(
                   children: [
                     Expanded(
@@ -154,18 +149,8 @@ class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
                   children: [
                     DrawerButton(
                       icon: Icons.home,
-                      label: 'Home',
-                      onTap: () => changeScreen(
-                        Center(
-                          child: Text(
-                            'Accueil',
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
+                      label: 'Accueil',
+                      onTap: () => changeScreen(HomePage()),
                     ),
                     DrawerButton(
                       icon: Icons.help_outline,
@@ -178,19 +163,19 @@ class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
                       onTap: () => changeScreen(GamesListPage()),
                     ),
                     DrawerButton(
-                      icon: Icons.group_add_outlined,
+                        icon: Icons.play_circle_fill,
                       label: 'Jouer',
                       onTap: () => changeScreen(JouerPage(quizData: {})),
                     ),
                     DrawerButton(
-                      icon: Icons.star_border,
+                       icon: Icons.add_circle_outline,
                       label: 'Générer un jeu',
                       onTap: () => changeScreen(GamePage()),
                     ),
                     DrawerButton(
                       icon: Icons.info_outline,
-                      label: 'Messages',
-                      onTap: () => changeScreen(NotificationsPage()),
+                      label: 'Apropos',
+                      onTap: () => changeScreen(AproposPage()),
                     ),
                     Divider(color: Colors.grey[400]),
                     DrawerButton(
@@ -207,8 +192,8 @@ class _APPRENANTDashboardState extends State<APPRENANTDashboard> {
         ),
       ),
       body: Container(
-        color: Colors.purple[50], // fond violet très clair
-        padding: EdgeInsets.all(24.0),
+        color: Colors.purple[50],
+        padding: EdgeInsets.all(16.0),
         child: currentScreen,
       ),
     );
